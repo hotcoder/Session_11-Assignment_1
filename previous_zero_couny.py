@@ -1,5 +1,7 @@
-import pandas as pd
+df = pd.DataFrame({'X': [7, 2, 0, 3, 4, 2, 5, 0, 3, 4]})
 
-s = pd.Series([7, 2, 0, 3, 4, 2, 5, 0, 3, 4])
+# make a new column with zeros at zeros and nans elsewhere
+df = df.assign(idx_from_0=df.loc[df.X==0])
 
-(s.groupby(s.eq(0).cumsum().mask(s.eq(0))).cumcount() + 1).mask(s.eq(0), 0).tolist()
+nul = df['idx_from_0'].isnull()
+df.assign(idx_from_0=nul.groupby((nul.diff() == 1).cumsum()).cumsum())
